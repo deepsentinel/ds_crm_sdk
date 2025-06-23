@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
 
@@ -18,7 +18,7 @@ class HTTPTransport(ABC):
     @abstractmethod
     def send(self, method: HTTPMethod, endpoint: str,
              payload: Optional[BaseModel] = None, params: dict = None,
-             headers: Optional[Dict[str, str]] = None) -> dict:
+             headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
         """
         Abstract method that can be used by sync http concreate classes to send requests
         :param method: HTTPMethod Enum
@@ -26,7 +26,7 @@ class HTTPTransport(ABC):
         :param payload: payload of the request: Expects pydantic models
         :param params: params, if the request needs params
         :param headers: headers used for the request
-        :return: JSON
+        :return: Tuple with data and status code
         """
         pass
 
@@ -35,7 +35,7 @@ class AsyncHTTPTransport(ABC):
     @abstractmethod
     async def send(self, method: HTTPMethod, endpoint: str,
                    payload: Optional[BaseModel] = None, params: dict = None,
-                   headers: Optional[Dict[str, str]] = None) -> dict:
+                   headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
         """
         Abstract method that can be used by async http concreate classes to send requests
         :param method: HTTPMethod Enum
@@ -43,6 +43,6 @@ class AsyncHTTPTransport(ABC):
         :param payload: payload of the request: Expects pydantic models
         :param params: params, if the request needs params
         :param headers: headers used for the request
-        :return: JSON
+        :return: Tuple with data and status code
         """
         pass

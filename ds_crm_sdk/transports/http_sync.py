@@ -1,8 +1,8 @@
 import requests
 from .base import HTTPMethod, HTTPTransport
-from typing import Optional, Callable, Dict
+from typing import Optional, Callable, Dict, Tuple
 from pydantic import BaseModel
-
+from http import HTTPStatus
 
 class DSHTTPTransport(HTTPTransport):
     def __init__(self, token_provider: Callable[[], str]):
@@ -21,7 +21,7 @@ class DSHTTPTransport(HTTPTransport):
 
     def send(self, method: HTTPMethod, endpoint: str,
              payload: Optional[BaseModel] = None, params: dict = None,
-             headers: Optional[Dict[str, str]] = None) -> dict:
+             headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
         """
         Sends the http request based on the given arguments
         :param method: HTTPMethod Enum
@@ -29,15 +29,20 @@ class DSHTTPTransport(HTTPTransport):
         :param payload: payload of the request: Expects pydantic models
         :param params: params, if the request needs params
         :param headers: headers used for the request
-        :return: JSON
+        :return: Tuple with data and status code
         """
-        response = requests.request(
-            method=method,
-            url=endpoint,
-            json=payload.dict() if payload else None,
-            params=params,
-            headers=self._headers(headers)
-        )
-        # Todo: Handle a common return here, so that callee always relies on certain kind of response
-        response.raise_for_status()
-        return response.json()
+        try:
+            response = requests.request(
+                method=method,
+                url=endpoint,
+                json=payload.dict() if payload else None,
+                params=params,
+                headers=self._headers(headers)
+            )
+            return response.json(), response.status_code
+        except requests.HTTPError as e:
+            status = e.response.status_code if e.response else HTTPStatus.INTERNAL_SERVER_ERROR
+            return {'error': str(e)}, status
+        except Exception as e:
+            return {'error': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
