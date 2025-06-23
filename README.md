@@ -43,9 +43,8 @@ TBA
 
 ## 🛠️ Extending the SDK
 
-- Add a new client type: implement a new `PayloadBuilder` subclass
+- Add a new client type base payload builders: implement a new `PayloadBuilder` subclass
 - Add a new transport: subclass `Transport` or `AsyncTransport`
-
 ---
 
 
