@@ -4,6 +4,7 @@ from typing import Optional, Callable, Dict, Tuple
 from pydantic import BaseModel
 from http import HTTPStatus
 
+
 class DSHTTPTransport(HTTPTransport):
     def __init__(self, token_provider: Callable[[], str]):
         self.token_provider = token_provider
