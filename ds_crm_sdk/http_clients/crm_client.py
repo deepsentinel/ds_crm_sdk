@@ -1,6 +1,6 @@
 from ds_crm_sdk.transports.base import HTTPMethod, HTTPTransport
 from ds_crm_sdk.payloads import MainPayloadBuilder
-from .endpoints import AccountEndpoints
+from .endpoints import AccountEndpoint
 
 
 class CRMClient:
@@ -18,7 +18,7 @@ class CRMClient:
         :param account_id: The ID of the account to retrieve.
         :return: Account details as a dictionary with http status code.
         """
-        endpoint = AccountEndpoints.SPECIFIC_ACCOUNT.format(account_id=account_id)
+        endpoint = AccountEndpoint.SPECIFIC_ACCOUNT.format(account_id=account_id)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
@@ -34,7 +34,7 @@ class CRMClient:
         :param page_size: The number of accounts per page for pagination.
         :return: A list of accounts matching the filters with http status code
         """
-        endpoint = AccountEndpoints.BASE
+        endpoint = AccountEndpoint.BASE
         params = {**self.__main_payload.dict(), **filters, 'page': page, 'page_size': page_size}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
@@ -51,7 +51,7 @@ class CRMClient:
         :param page_size: The number of addresses per page for pagination.
         :return: A list of addresses associated with the account with http status code.
         """
-        endpoint = AccountEndpoints.ACCOUNT_ADDRESSES.format(account_id=account_id)
+        endpoint = AccountEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
         params = {**self.__main_payload.dict(), 'page': page, 'page_size': page_size}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
@@ -69,7 +69,7 @@ class CRMClient:
         :param page_size: The number of addresses per page for pagination.
         :return: A list of addresses associated with the account matching the filters with http status code.
         """
-        endpoint = AccountEndpoints.ACCOUNT_ADDRESSES.format(account_id=account_id)
+        endpoint = AccountEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
         params = {**self.__main_payload.dict(), **filters, 'page': page, 'page_size': page_size}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
@@ -85,7 +85,7 @@ class CRMClient:
         :param page_size: The number of account types per page for pagination.
         :return: A list of account types with http status code.
         """
-        endpoint = AccountEndpoints.ACCOUNT_TYPES
+        endpoint = AccountEndpoint.ACCOUNT_TYPES
         params = {**self.__main_payload.dict(), 'page': page, 'page_size': page_size}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
