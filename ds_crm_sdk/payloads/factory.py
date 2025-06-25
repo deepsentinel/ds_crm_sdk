@@ -1,7 +1,7 @@
 from .main_payload import WebPayloadBase, EwapPayloadBase, MobileAPIPayloadBase, AdminDashboardPayloadBase
 from .base import PayloadBuilder
 from pydantic import BaseModel
-from .constants import ClientOrigin
+from ds_crm_sdk.constants import ClientOrigin
 
 
 def get_main_payload_builder(client_origin: str):

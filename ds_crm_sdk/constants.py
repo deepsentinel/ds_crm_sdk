@@ -9,3 +9,8 @@ class ClientOrigin(str, Enum):
     EWAP = "ewap"
     MOBILE_API = "mobile-api"
     ADMIN_DASHBOARD = "admin-dashboard"
+
+
+class SortOrder(str, Enum):
+    ASC = "ASC"
+    DESC = "DESC"

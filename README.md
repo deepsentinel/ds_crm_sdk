@@ -28,7 +28,8 @@ pip install .
 from ds_crm_sdk.http_clients.crm_client import CRMClient
 from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.transports import DSHTTPTransport
-from ds_crm_sdk.payloads.constants import ClientOrigin
+from ds_crm_sdk.constants import ClientOrigin
+
 builder = MainPayloadBuilder()
 transport = DSHTTPTransport(token_provider=lambda: 'fake-token')
 base_url = '<<domain base url>>'

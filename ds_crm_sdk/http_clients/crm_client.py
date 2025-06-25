@@ -1,13 +1,7 @@
 from ds_crm_sdk.transports.base import HTTPMethod, HTTPTransport
 from ds_crm_sdk.payloads import MainPayloadBuilder
 from .endpoints import AccountEndpoint
-from enum import Enum
-from ds_crm_sdk.payloads.constants import ClientOrigin
-
-
-class SortOrder(str, Enum):
-    ASC = "ASC"
-    DESC = "DESC"
+from ds_crm_sdk.constants import ClientOrigin, SortOrder
 
 
 class CRMClient:
