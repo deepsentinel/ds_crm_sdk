@@ -1,6 +1,12 @@
 from ds_crm_sdk.transports.base import HTTPMethod, HTTPTransport
 from ds_crm_sdk.payloads import MainPayloadBuilder
 from .endpoints import AccountEndpoint
+from enum import Enum
+
+
+class SortOrder(str, Enum):
+    ASC = "ASC"
+    DESC = "DESC"
 
 
 class CRMClient:
@@ -26,16 +32,20 @@ class CRMClient:
         )
         return data, status_code
 
-    def get_accounts_by_filters(self, filters: dict, page=1, page_size=10)-> tuple:
+    def get_accounts_by_filters(self, filters: dict, offset=0, limit=10,
+                                sort_by: str = 'created', sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get accounts by applying filters.
         :param filters: A dictionary containing the filters to apply.
-        :param page: The page number for pagination.
-        :param page_size: The number of accounts per page for pagination.
+        :param offset: Starting point for pagination, default is 0.
+        :param limit: The number of accounts per page for pagination.
+        :param sort_by: The field to sort by, default is 'created'.
+        :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of accounts matching the filters with http status code
         """
         endpoint = AccountEndpoint.BASE
-        params = {**self.__main_payload.dict(), **filters, 'page': page, 'page_size': page_size}
+        params = {**self.__main_payload.dict(), **filters, 'offset': offset, 'limit': limit,
+                  'sort_by': sort_by, 'sort_order': sort_order}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
@@ -43,16 +53,21 @@ class CRMClient:
         )
         return data, status_code
 
-    def get_account_addresses(self, account_id: str, page=1, page_size=10) -> tuple:
+    def get_account_addresses(self, account_id: str, offset=0, limit=10,
+                              sort_by: str = 'address.created',
+                              sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get addresses for a specific account.
         :param account_id: The ID of the account whose addresses are to be retrieved.
-        :param page: The page number for pagination.
-        :param page_size: The number of addresses per page for pagination.
+        :param offset: Starting point for pagination, default is 0.
+        :param limit: The number of addresses per page for pagination.
+        :param sort_by: The field to sort by, default is 'address.created'.
+        :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of addresses associated with the account with http status code.
         """
         endpoint = AccountEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
-        params = {**self.__main_payload.dict(), 'page': page, 'page_size': page_size}
+        params = {**self.__main_payload.dict(), 'offset': offset, 'limit': limit,
+                  'sort_by': sort_by, 'sort_order': sort_order}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
@@ -60,17 +75,22 @@ class CRMClient:
         )
         return data, status_code
 
-    def get_account_addresses_by_filters(self, account_id: str, filters: dict, page=1, page_size=10) -> tuple:
+    def get_account_addresses_by_filters(self, account_id: str, filters: dict,
+                                         offset=0, limit=10, sort_by: str = 'address.created',
+                                         sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get addresses for a specific account by applying filters.
         :param account_id: The ID of the account whose addresses are to be retrieved.
         :param filters: A dictionary containing the filters to apply.
-        :param page: The page number for pagination.
-        :param page_size: The number of addresses per page for pagination.
+        :param offset: Starting point for pagination, default is 0.
+        :param limit: The number of addresses per page for pagination.
+        :param sort_by: The field to sort by, default is 'address.created'.
+        :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of addresses associated with the account matching the filters with http status code.
         """
         endpoint = AccountEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
-        params = {**self.__main_payload.dict(), **filters, 'page': page, 'page_size': page_size}
+        params = {**self.__main_payload.dict(), **filters, 'offset': offset, 'limit': limit,
+                  'sort_by': sort_by, 'sort_order': sort_order}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
@@ -78,15 +98,20 @@ class CRMClient:
         )
         return data, status_code
 
-    def get_account_types(self, page=1, page_size=10) -> tuple:
+    def get_account_types(self, offset=0, limit=10,
+                          sort_by: str = 'created',
+                          sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get all account types.
-        :param page: The page number for pagination.
-        :param page_size: The number of account types per page for pagination.
+        :param offset: Starting point for pagination, default is 0.
+        :param limit: The number of account types per page for pagination.
+        :param sort_by: The field to sort by, default is 'created'.
+        :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of account types with http status code.
         """
         endpoint = AccountEndpoint.ACCOUNT_TYPES
-        params = {**self.__main_payload.dict(), 'page': page, 'page_size': page_size}
+        params = {**self.__main_payload.dict(), 'offset': offset, 'limit': limit,
+                  'sort_by': sort_by, 'sort_order': sort_order}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
