@@ -54,12 +54,13 @@ Retrieve accounts by applying filters.
   - `phone_number` (optional): Filter accounts by phone number (should be exact match).
   - `parent_account_id` (optional): Filter accounts by parent account ID.
   - `account_type_id` (optional): Filter accounts by account type ID.
-- ** Additional Parameters**:
+- **Additional Parameters**:
   - `offset` (optional): Start point for the pagination.
   - `limit` (optional): Maximum number of records (default: 10).
   - `sort_by` (optional): Field to sort by (default: `created`).
   - `sort_order` (optional): Sort order (`asc` or `desc`, default: `desc`).
-** Note: ** The `filters` parameter is a dictionary that can include any of the above fields. Multiple filters are not supported in a single request.
+
+**Note:** The `filters` parameter is a dictionary that can include any of the above fields. Multiple filters are not supported in a single request.
 ```python
 filters = {'email_address': 'xyz@abc.com'}
 data, status_code = client.get_accounts_by_filters(filters=filters)
@@ -70,7 +71,7 @@ print(data, status_code)
 
 #### 3. `get_account_addresses(...) -> tuple`
 Retrieve addresses for a specific account.
-- ** Parameters**:
+- **Parameters**:
   - `offset` (optional): Start point for the pagination.
   - `limit` (optional): Maximum number of records (default: 10).
   - `sort_by` (optional): Field to sort by (default: `created`).
@@ -88,7 +89,7 @@ Retrieve addresses for a specific account by applying filters.
 - **filters**:
   - `address_type` (optional): Filter by address type (`shipping` or `billing`).
   - `is_default` (optional): Filter by default status (`true` or `false`).
-- ** Additional Parameters**:
+- **Additional Parameters**:
   - `account_id`: ID of the account to retrieve addresses for.
   - `offset` (optional): Start point for the pagination.
   - `limit` (optional): Maximum number of records (default: 10).
@@ -105,7 +106,7 @@ print(data, status_code)
 
 #### 5. `get_account_types(...) -> tuple`
 Retrieve all account types.
-- ** Parameters**:
+- **Parameters** :
   - `offset` (optional): Start point for the pagination.
   - `limit` (optional): Maximum number of records (default: 10).
   - `sort_by` (optional): Field to sort by (default: `created`).
