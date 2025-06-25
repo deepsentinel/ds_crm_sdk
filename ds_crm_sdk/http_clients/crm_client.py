@@ -2,6 +2,7 @@ from ds_crm_sdk.transports.base import HTTPMethod, HTTPTransport
 from ds_crm_sdk.payloads import MainPayloadBuilder
 from .endpoints import AccountEndpoint
 from enum import Enum
+from ds_crm_sdk.payloads.constants import ClientOrigin
 
 
 class SortOrder(str, Enum):
@@ -10,13 +11,13 @@ class SortOrder(str, Enum):
 
 
 class CRMClient:
-    def __init__(self, base_url: str, client_type: str, transport: HTTPTransport, builder: MainPayloadBuilder):
+    def __init__(self, base_url: str, client_origin: ClientOrigin, transport: HTTPTransport, builder: MainPayloadBuilder):
         self.__base_url = base_url
-        self.__client_type = client_type
+        self.__client_origin = client_origin
         self.__transport = transport
         self.__builder = builder
         # Creates the main payload based on the client type (skeleton)
-        self.__main_payload = self.__builder.build_main_payload(client_type=self.__client_type)
+        self.__main_payload = self.__builder.build_main_payload(client_type=self.__client_origin)
 
     def get_account(self, account_id: str) -> tuple:
         """
