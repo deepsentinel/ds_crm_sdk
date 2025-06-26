@@ -17,7 +17,7 @@ class DSAsyncHTTPTransport(AsyncHTTPTransport):
         """
         headers = extra.copy() if extra else dict()
         if self.token_provider and callable(self.token_provider):
-            headers["Authorization"] = f"Bearer {self.token_provider()}"
+            headers["Authorization"] = f"{self.token_provider()}"
         return headers
 
     async def send(self, method: HTTPMethod, endpoint: str,
@@ -41,7 +41,7 @@ class DSAsyncHTTPTransport(AsyncHTTPTransport):
                     params=params,
                     headers=self._headers(headers)
                 )
-                return response.json(), response.status_code
+                return await response.json(), response.status_code
             except httpx.HTTPStatusError as e:
                 status = e.response.status_code if e.response else HTTPStatus.INTERNAL_SERVER_ERROR
                 return {'error': str(e)}, status

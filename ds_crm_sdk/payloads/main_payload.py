@@ -2,18 +2,18 @@ from pydantic import BaseModel
 
 
 class WebPayloadBase(BaseModel):
-    client_type: str = 'web'
+    client_origin: str = 'web'
 
 
 class EwapPayloadBase(BaseModel):
-    client_type: str = 'ewap'
+    client_origin: str = 'ewap'
 
 
 class MobileAPIPayloadBase(BaseModel):
-    client_type: str = 'mobile-api'
+    client_origin: str = 'mobile-api'
 
 
 class AdminDashboardPayloadBase(BaseModel):
-    client_type: str = 'admin-dashboard'
+    client_origin: str = 'admin-dashboard'
 
 

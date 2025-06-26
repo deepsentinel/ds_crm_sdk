@@ -23,7 +23,7 @@ class CRMClient:
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
-            params=self.__main_payload.dict()
+            params=self.__main_payload.model_dump()
         )
         return data, status_code
 
@@ -39,7 +39,7 @@ class CRMClient:
         :return: A list of accounts matching the filters with http status code
         """
         endpoint = AccountEndpoint.BASE
-        params = {**self.__main_payload.dict(), 'offset': offset, 'limit': limit,
+        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
                   'sort_by': sort_by, 'sort_order': sort_order}
         if filters and isinstance(filters, dict):
             params.update(filters)
@@ -64,7 +64,7 @@ class CRMClient:
         :return: A list of addresses associated with the account with http status code.
         """
         endpoint = AccountAddressEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
-        params = {**self.__main_payload.dict(), 'offset': offset, 'limit': limit,
+        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
                   'sort_by': sort_by, 'sort_order': sort_order}
         if filters and isinstance(filters, dict):
             params.update(filters)
@@ -83,7 +83,7 @@ class CRMClient:
         :return: A list of addresses associated with the account with http status code.
         """
         endpoint = AccountAddressEndpoint.ACCOUNT_ADDRESS.format(account_id=account_id, address_id=address_id)
-        params = {**self.__main_payload.dict()}
+        params = {**self.__main_payload.model_dump()}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,
@@ -104,7 +104,7 @@ class CRMClient:
         :return: A list of account types with http status code.
         """
         endpoint = AccountEndpoint.ACCOUNT_TYPES
-        params = {**self.__main_payload.dict(), 'offset': offset, 'limit': limit,
+        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
                   'sort_by': sort_by, 'sort_order': sort_order}
         if filters and isinstance(filters, dict):
             params.update(filters)
@@ -122,7 +122,7 @@ class CRMClient:
         :return: A list of account types with http status code.
         """
         endpoint = AccountTypesEndpoint.ACCOUNT_TYPE.format(type_id=type_id)
-        params = {**self.__main_payload.dict()}
+        params = {**self.__main_payload.model_dump()}
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=self.__base_url + endpoint,

@@ -10,11 +10,19 @@ dependencies = [
     "requests>=2.32.4",
     "pydantic>=2.0.0"
 ]
+[project.optional-dependencies]
+test = [
+    "pytest>=7.4.4,<8.0.0",
+    "pytest-asyncio>=0.23.5,<0.24.0",
+    "coverage>=7.4.4,<8.0.0",
+    "factory_boy>=3.3.0,<4.0.0"
+]
+
+
 requires-python = ">=3.8"
 
 [project.urls]
-Homepage = "TBA"
-Repository = "TBA"
+Repository = "https://github.com/deepsentinel/ds_crm_sdk"
 
 [build-system]
 requires = ["setuptools"]
@@ -23,3 +31,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.package-dir]
 ds_crm_sdk = "ds_crm_sdk"
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ds_crm_sdk*"]
+exclude = ["tests", "tests.*"]
