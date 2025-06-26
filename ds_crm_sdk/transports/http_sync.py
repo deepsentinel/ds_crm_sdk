@@ -17,7 +17,8 @@ class DSHTTPTransport(HTTPTransport):
         """
         headers = extra.copy() if extra else dict()
         if self.token_provider and callable(self.token_provider):
-            headers["Authorization"] = f"Bearer {self.token_provider()}"
+            # Assuming the token provider returns a string token. For jwt token provider can return Bearer <token>
+            headers["Authorization"] = f"{self.token_provider()}"
         return headers
 
     def send(self, method: HTTPMethod, endpoint: str,
