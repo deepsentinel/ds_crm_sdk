@@ -1,0 +1,16 @@
+# .coveragerc
+[run]
+branch = True
+omit =
+    */tests/*
+    */__init__.py
+    */conftest.py
+    */fixtures/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    @abstractmethod
+
+show_missing = True
