@@ -141,9 +141,8 @@ print(data, status_code)
 crm_sdk/
 ├── transports/          # Sync and async HTTP transport classes
 ├── payloads/            # Client-specific payload builders
-├── endpoints/           # Enum definitions for CRM endpoints
-├── client.py            # CRMClient & AsyncCRMClient
-└── models.py            # Common pydantic models
+├── http_clients/        # Asynchronous and synchronous client implementations, along with common client logic
+├── constants/           # Constants and enums used across the SDK
 ```
 
 ---
