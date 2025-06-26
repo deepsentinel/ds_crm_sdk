@@ -1,6 +1,7 @@
 [project]
 name = "ds_crm_sdk"
 version = "0.1.0"
+requires-python = ">=3.8"
 description = "Deep Sentinel CRM SDK for CRM service with transport layer"
 authors = [
     { name = "Prav", email = "praveen@deepsentinel.com"}
@@ -10,6 +11,7 @@ dependencies = [
     "requests>=2.32.4",
     "pydantic>=2.0.0"
 ]
+
 [project.optional-dependencies]
 test = [
     "pytest>=7.4.4,<8.0.0",
@@ -17,9 +19,6 @@ test = [
     "coverage>=7.4.4,<8.0.0",
     "factory_boy>=3.3.0,<4.0.0"
 ]
-
-
-requires-python = ">=3.8"
 
 [project.urls]
 Repository = "https://github.com/deepsentinel/ds_crm_sdk"
