@@ -64,7 +64,7 @@ Retrieve accounts by applying filters.
 **Note:** The `filters` parameter is a dictionary that can include any of the above fields. Multiple filters are supported, all should match to retrieve the result.
 ```python
 filters = {'email': 'xyz@abc.com'}
-data, status_code = client.get_accounts_by_filters(filters=filters)
+data, status_code = client.get_accounts_by_filters(filters=filters, offset=0, limit=10, sort_by='created', sort_order='asc')
 print(data, status_code)
 ```
 
@@ -73,10 +73,8 @@ print(data, status_code)
 #### 3. `get_account_addresses(...) -> tuple`
 Retrieve addresses for a specific account.
 - **filters**:
-  - `need_shipping` (optional): Pull only shipping addresses of the account.
-  - `need_billing` (optional): Pull only billing addresses of the account.
-  - `need_shipping_default` (optional): Pull the default shipping address.
-  - `need_billing_default` (optional): Pull the default billing address.
+  - `address_type` (optional): Filter by address type (`shipping` or `billing`).
+  - `need_only_default` (optional): Filter by default address type (`true` or `false`). Example: address_type=shipping and need_only_default=true will return only the default shipping address.
 - **Parameters**:
   - `account_id`: ID of the account to retrieve addresses for.
   - `offset` (optional): Start point for the pagination.
@@ -85,8 +83,9 @@ Retrieve addresses for a specific account.
   - `sort_order` (optional): Sort order (`asc` or `desc`, default: `desc`).
 ** Note: ** The `filters` parameter is a dictionary that can include any of the above fields. Multiple filters are not supported in a single request. Only one filter can be applied at a time.
 ```python
-filters = {'need_shipping': True}
-data, status_code = client.get_account_addresses(account_id='123')
+filters = {'address_type': 'shipping', 'need_only_default': 'true'}
+data, status_code = client.get_account_addresses(account_id='123', filters=filters, offset=0, limit=10,
+                                                 sort_by='created', sort_order='asc')
 print(data, status_code)
 ```
 
@@ -114,7 +113,7 @@ Retrieve all account types.
 ** Note: ** The `filters` parameter is a dictionary that can include any of the above fields. Multiple filters are supported, all should match to retrieve the result.
 ```python
 filters = {'name': 'Business'}
-data, status_code = client.get_account_types()
+data, status_code = client.get_account_types(filters=filters, offset=0, limit=10, sort_by='created', sort_order='asc')
 print(data, status_code)
 ```
 
