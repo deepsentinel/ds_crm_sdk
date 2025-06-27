@@ -52,7 +52,7 @@ class CRMClient(BaseCRMClient):
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params= params
+            params=params
         )
         return data, status_code
 

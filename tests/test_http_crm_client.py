@@ -3,7 +3,7 @@ from unittest.mock import patch
 from http import HTTPStatus
 from ds_crm_sdk.clients.http.crm_client import CRMClient
 from ds_crm_sdk.payloads import MainPayloadBuilder
-from ds_crm_sdk.transports import DSHTTPTransport
+from ds_crm_sdk.transports.http import DSHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin
 from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
 from ds_crm_sdk.constants import SortOrder
@@ -12,13 +12,11 @@ from tests.fixtures import DummyAccountFactory
 
 class TestHTTPCRMClient(unittest.TestCase):
     def setUp(self):
-        self.builder = MainPayloadBuilder()
         self.request_token = 'Dummy Token'
         self.transport = DSHTTPTransport(token_provider=lambda: self.request_token)
         self.base_url = 'https://ds-mock-crm-service.com'
         self.client = CRMClient(
             client_origin=ClientOrigin.EWAP,
-            builder=self.builder,
             base_url=self.base_url,
             transport=self.transport
         )

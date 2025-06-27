@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, patch
 from http import HTTPStatus
 from ds_crm_sdk.clients.http.async_crm_client import AsyncCRMClient
 from ds_crm_sdk.payloads import MainPayloadBuilder
-from ds_crm_sdk.transports import DSAsyncHTTPTransport
+from ds_crm_sdk.transports.http import DSAsyncHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin, SortOrder
 from tests.fixtures import DummyAccountFactory
 from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
