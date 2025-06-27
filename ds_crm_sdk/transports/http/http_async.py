@@ -1,24 +1,19 @@
-import httpx
-from .base import HTTPMethod, AsyncHTTPTransport
-from typing import Optional, Callable, Dict, Tuple
-from pydantic import BaseModel
+"""
+Async HTTP Transport for DS CRM SDK
+"""
 from http import HTTPStatus
+from typing import Optional, Callable, Dict, Tuple
+import httpx
+from pydantic import BaseModel
+from .base import HTTPMethod, AsyncHTTPTransport, HTTPHeaderTokenProvider
 
 
-class DSAsyncHTTPTransport(AsyncHTTPTransport):
+class DSAsyncHTTPTransport(HTTPHeaderTokenProvider, AsyncHTTPTransport):
+    """
+    Async HTTP Transport for DS CRM SDK.
+    """
     def __init__(self, token_provider: Callable[[], str]):
-        self.token_provider = token_provider
-
-    def _headers(self, extra: Optional[Dict[str, str]] = None) -> Dict[str, str]:
-        """
-        Method that sets the header with the given key, value pairs
-        :param extra: Additional header fields, if needed
-        :return: Dict of header fields and values
-        """
-        headers = extra.copy() if extra else dict()
-        if self.token_provider and callable(self.token_provider):
-            headers["Authorization"] = f"{self.token_provider()}"
-        return headers
+        super().__init__(token_provider)
 
     async def send(self, method: HTTPMethod, endpoint: str,
                    payload: Optional[BaseModel] = None, params: dict = None,
@@ -47,4 +42,5 @@ class DSAsyncHTTPTransport(AsyncHTTPTransport):
                 return {'error': str(e)}, status
             except Exception as e:
                 return {'error': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
 

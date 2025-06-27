@@ -1,7 +1,11 @@
+"""
+Factories for generating dummy data for testing purposes.
+"""
 import factory
-from .dummy_models import DummyAccount
 from faker import Faker
+from .dummy_models import DummyAccount
 
+# Initialize Faker instance for generating random data
 fake = Faker()
 
 
@@ -28,4 +32,5 @@ class DummyAccountFactory(factory.Factory):
     created_by = factory.Faker('user_name')
     modified = factory.LazyFunction(lambda: fake.date_time_this_decade(tzinfo=None).isoformat())
     modified_by = factory.Faker('user_name')
-    last_billing_date = factory.LazyFunction(lambda: fake.date_time_this_decade(tzinfo=None).isoformat())
+    last_billing_date = factory.LazyFunction(lambda: fake
+                                             .date_time_this_decade(tzinfo=None).isoformat())

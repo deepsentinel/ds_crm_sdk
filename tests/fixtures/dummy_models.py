@@ -1,7 +1,8 @@
+"""
+This module contains dummy data models for testing purposes.
+"""
 from dataclasses import dataclass, asdict
 from typing import Optional
-
-
 
 
 @dataclass
@@ -27,6 +28,9 @@ class DummyAccount:
     last_billing_date: str = "Sun, 01 Jun 2025 00:00:00 GMT"
 
     def to_dict(self):
+        """
+        Convert the DummyAccount instance to a dictionary representation.
+        :return:
+        """
         return asdict(self)
-
 

@@ -1,13 +1,14 @@
 import unittest
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 from http import HTTPStatus
-from ds_crm_sdk.http_clients.crm_client import CRMClient
+from ds_crm_sdk.clients.http.crm_client import CRMClient
 from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.transports import DSHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin
-from tests.fixtures import DummyAccountFactory
-from ds_crm_sdk.http_clients.endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
+from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
 from ds_crm_sdk.constants import SortOrder
+from tests.fixtures import DummyAccountFactory
+
 
 class TestHTTPCRMClient(unittest.TestCase):
     def setUp(self):

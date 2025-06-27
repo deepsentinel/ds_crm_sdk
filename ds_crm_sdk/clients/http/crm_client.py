@@ -1,17 +1,22 @@
-from ds_crm_sdk.transports.base import HTTPMethod, HTTPTransport
+"""
+Sync CRMClient for interacting with CRM API endpoints.
+"""
+# pylint: disable=duplicate-code
+from ds_crm_sdk.transports.http.base import HTTPMethod, HTTPTransport
 from ds_crm_sdk.payloads import MainPayloadBuilder
-from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
 from ds_crm_sdk.constants import ClientOrigin, SortOrder
+from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
+from .base import BaseCRMClient
 
 
-class CRMClient:
-    def __init__(self, base_url: str, client_origin: ClientOrigin, transport: HTTPTransport, builder: MainPayloadBuilder):
-        self.__base_url = base_url
-        self.__client_origin = client_origin
+class CRMClient(BaseCRMClient):
+    """
+    Synchronous CRMClient for interacting with CRM API endpoints.
+    """
+    def __init__(self, base_url: str, client_origin: ClientOrigin,
+                 transport: HTTPTransport):
+        super().__init__(base_url=base_url, builder=MainPayloadBuilder(client_origin=client_origin))
         self.__transport = transport
-        self.__builder = builder
-        # Creates the main payload based on the client type (skeleton)
-        self.__main_payload = self.__builder.build_main_payload(client_type=self.__client_origin)
 
     def get_account(self, account_id: str) -> tuple:
         """
@@ -19,11 +24,13 @@ class CRMClient:
         :param account_id: The ID of the account to retrieve.
         :return: Account details as a dictionary with http status code.
         """
-        endpoint = AccountEndpoint.SPECIFIC_ACCOUNT.format(account_id=account_id)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.SPECIFIC_ACCOUNT,
+                                            values_to_inject={'account_id': account_id})
+        params = self._builder.build_main_payload()
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
-            params=self.__main_payload.model_dump()
+            endpoint=endpoint,
+            params=params
         )
         return data, status_code
 
@@ -38,15 +45,14 @@ class CRMClient:
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of accounts matching the filters with http status code
         """
-        endpoint = AccountEndpoint.BASE
-        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
-                  'sort_by': sort_by, 'sort_order': sort_order}
-        if filters and isinstance(filters, dict):
-            params.update(filters)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.BASE)
+        params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
+                                                     'sort_by': sort_by, 'sort_order': sort_order,
+                                                     'filters': filters})
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
-            params=params
+            endpoint=endpoint,
+            params= params
         )
         return data, status_code
 
@@ -63,14 +69,14 @@ class CRMClient:
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of addresses associated with the account with http status code.
         """
-        endpoint = AccountAddressEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
-        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
-                  'sort_by': sort_by, 'sort_order': sort_order}
-        if filters and isinstance(filters, dict):
-            params.update(filters)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountAddressEndpoint.ACCOUNT_ADDRESSES,
+                                            values_to_inject={'account_id': account_id})
+        params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
+                                                     'sort_by': sort_by, 'sort_order': sort_order,
+                                                     'filters': filters})
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -82,11 +88,13 @@ class CRMClient:
         :param address_id: The ID of the address to retrieve.
         :return: A list of addresses associated with the account with http status code.
         """
-        endpoint = AccountAddressEndpoint.ACCOUNT_ADDRESS.format(account_id=account_id, address_id=address_id)
-        params = {**self.__main_payload.model_dump()}
+        endpoint = self._build_endpoint_url(endpoint_template=AccountAddressEndpoint.ACCOUNT_ADDRESS,
+                                            values_to_inject={'account_id': account_id,
+                                                              'address_id': address_id})
+        params = self._builder.build_main_payload()
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -103,14 +111,13 @@ class CRMClient:
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of account types with http status code.
         """
-        endpoint = AccountEndpoint.ACCOUNT_TYPES
-        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
-                  'sort_by': sort_by, 'sort_order': sort_order}
-        if filters and isinstance(filters, dict):
-            params.update(filters)
+        endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNT_TYPES)
+        params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
+                                                     'sort_by': sort_by, 'sort_order': sort_order,
+                                                     'filters': filters})
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -121,11 +128,12 @@ class CRMClient:
         :param type_id: The ID of the account type to retrieve.
         :return: A list of account types with http status code.
         """
-        endpoint = AccountTypesEndpoint.ACCOUNT_TYPE.format(type_id=type_id)
-        params = {**self.__main_payload.model_dump()}
+        endpoint = self._build_endpoint_url(endpoint_template=AccountTypesEndpoint.ACCOUNT_TYPE,
+                                            values_to_inject={'type_id': type_id})
+        params = self._builder.build_main_payload()
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code

@@ -1,29 +1,25 @@
-import requests
-from .base import HTTPMethod, HTTPTransport
+"""
+Deep Sentinel's HTTP Transport Module
+"""
 from typing import Optional, Callable, Dict, Tuple
-from pydantic import BaseModel
 from http import HTTPStatus
+import requests
+from pydantic import BaseModel
+from .base import HTTPMethod, HTTPTransport, HTTPHeaderTokenProvider
 
 
-class DSHTTPTransport(HTTPTransport):
+class DSHTTPTransport(HTTPHeaderTokenProvider, HTTPTransport):
+    """
+    DSHTTPTransport is a synchronous HTTP transport class for Deep Sentinel's CRM SDK.
+    """
+
     def __init__(self, token_provider: Callable[[], str]):
-        self.token_provider = token_provider
-
-    def _headers(self, extra: Optional[Dict[str, str]] = None) -> Dict[str, str]:
-        """
-        Method that sets the header with the given key, value pairs
-        :param extra: Additional header fields, if needed
-        :return: Dict of header fields and values
-        """
-        headers = extra.copy() if extra else dict()
-        if self.token_provider and callable(self.token_provider):
-            # Assuming the token provider returns a string token. For jwt token provider can return Bearer <token>
-            headers["Authorization"] = f"{self.token_provider()}"
-        return headers
+        super().__init__(token_provider)
 
     def send(self, method: HTTPMethod, endpoint: str,
              payload: Optional[BaseModel] = None, params: dict = None,
-             headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
+             headers: Optional[Dict[str, str]] = None,
+             timeout: float = 30.0) -> Tuple[Optional[dict], int]:
         """
         Sends the http request based on the given arguments
         :param method: HTTPMethod Enum
@@ -31,6 +27,7 @@ class DSHTTPTransport(HTTPTransport):
         :param payload: payload of the request: Expects pydantic models
         :param params: params, if the request needs params
         :param headers: headers used for the request
+        :param timeout: Timeout for the request in seconds
         :return: Tuple with data and status code
         """
         try:
@@ -39,7 +36,8 @@ class DSHTTPTransport(HTTPTransport):
                 url=endpoint,
                 json=payload.dict() if payload else None,
                 params=params,
-                headers=self._headers(headers)
+                headers=self._headers(headers),
+                timeout=timeout
             )
             return response.json(), response.status_code
         except requests.HTTPError as e:
@@ -47,4 +45,5 @@ class DSHTTPTransport(HTTPTransport):
             return {'error': str(e)}, status
         except Exception as e:
             return {'error': str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
+
 

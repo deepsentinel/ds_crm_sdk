@@ -1,21 +1,22 @@
-from ds_crm_sdk.transports.base import HTTPMethod, AsyncHTTPTransport
+"""
+AsyncCRMClient for interacting with CRM API endpoints.
+"""
+# pylint: disable=duplicate-code
+from ds_crm_sdk.transports.http.base import HTTPMethod, AsyncHTTPTransport
 from ds_crm_sdk.payloads import MainPayloadBuilder
+from ds_crm_sdk.constants import SortOrder, ClientOrigin
 from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
-from enum import Enum
+from .base import BaseCRMClient
 
 
-class SortOrder(str, Enum):
-    ASC = "ASC"
-    DESC = "DESC"
-
-
-class AsyncCRMClient:
-    def __init__(self, base_url: str, client_type: str, transport: AsyncHTTPTransport, builder: MainPayloadBuilder):
-        self.__base_url = base_url
-        self.__client_type = client_type
+class AsyncCRMClient(BaseCRMClient):
+    """
+    Async CRMClient for interacting with CRM API endpoints.
+    """
+    def __init__(self, base_url: str, client_origin: ClientOrigin,
+                 transport: AsyncHTTPTransport):
+        super().__init__(base_url=base_url, builder=MainPayloadBuilder(client_origin=client_origin))
         self.__transport = transport
-        self.__builder = builder
-        self.__main_payload = self.__builder.build_main_payload(client_type=self.__client_type)
 
     async def get_account(self, account_id: str) -> tuple:
         """
@@ -23,16 +24,19 @@ class AsyncCRMClient:
         :param account_id: The ID of the account to retrieve.
         :return: Account details as a dictionary with http status code.
         """
-        endpoint = AccountEndpoint.SPECIFIC_ACCOUNT.format(account_id=account_id)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.SPECIFIC_ACCOUNT,
+                                            values_to_inject={'account_id': account_id})
+        params = self._builder.build_main_payload()
         data, status_code = await self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
-            params=self.__main_payload.model_dump()
+            endpoint=endpoint,
+            params=params
         )
         return data, status_code
 
     async def get_accounts(self, filters: dict = None, offset=0, limit=10,
-                           sort_by: str = 'created', sort_order: SortOrder = SortOrder.DESC) -> tuple:
+                           sort_by: str = 'created',
+                           sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get accounts with filters.
         :param filters: A dictionary containing the filters to apply (optional).
@@ -42,14 +46,13 @@ class AsyncCRMClient:
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of accounts matching the filters with http status code
         """
-        endpoint = AccountEndpoint.BASE
-        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
-                  'sort_by': sort_by, 'sort_order': sort_order}
-        if filters and isinstance(filters, dict):
-            params.update(filters)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.BASE)
+        params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
+                                                     'sort_by': sort_by, 'sort_order': sort_order,
+                                                     'filters': filters})
         data, status_code = await self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -67,14 +70,14 @@ class AsyncCRMClient:
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of addresses associated with the account with http status code.
         """
-        endpoint = AccountAddressEndpoint.ACCOUNT_ADDRESSES.format(account_id=account_id)
-        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
-                  'sort_by': sort_by, 'sort_order': sort_order}
-        if filters and isinstance(filters, dict):
-            params.update(filters)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountAddressEndpoint.ACCOUNT_ADDRESSES,
+                                            values_to_inject={'account_id': account_id})
+        params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
+                                                     'sort_by': sort_by, 'sort_order': sort_order,
+                                                     'filters': filters})
         data, status_code = await self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -84,13 +87,16 @@ class AsyncCRMClient:
         Get addresses for a specific account.
         :param account_id: The ID of the account whose addresses are to be retrieved.
         :param address_id: The ID of the address to retrieve.
-        :return: A list of addresses associated with the account with http status code.
+        :return: A list of addresses associated with
+         the account with http status code.
         """
-        endpoint = AccountAddressEndpoint.ACCOUNT_ADDRESS.format(account_id=account_id, address_id=address_id)
-        params = {**self.__main_payload.model_dump()}
+        endpoint = self._build_endpoint_url(endpoint_template=AccountAddressEndpoint.ACCOUNT_ADDRESS,
+                                            values_to_inject={'account_id': account_id,
+                                                              'address_id': address_id})
+        params = self._builder.build_main_payload()
         data, status_code = await self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -107,14 +113,13 @@ class AsyncCRMClient:
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of account types with http status code.
         """
-        endpoint = AccountEndpoint.ACCOUNT_TYPES
-        params = {**self.__main_payload.model_dump(), 'offset': offset, 'limit': limit,
-                  'sort_by': sort_by, 'sort_order': sort_order}
-        if filters and isinstance(filters, dict):
-            params.update(filters)
+        endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNT_TYPES)
+        params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
+                                                     'sort_by': sort_by, 'sort_order': sort_order,
+                                                     'filters': filters})
         data, status_code = await self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
+            endpoint=endpoint,
             params=params
         )
         return data, status_code
@@ -125,12 +130,12 @@ class AsyncCRMClient:
         :param type_id: The ID of the account type to retrieve.
         :return: A list of account types with http status code.
         """
-        endpoint = AccountTypesEndpoint.ACCOUNT_TYPE.format(type_id=type_id)
-        params = {**self.__main_payload.model_dump()}
+        endpoint = self._build_endpoint_url(endpoint_template=AccountTypesEndpoint.ACCOUNT_TYPE,
+                                            values_to_inject={'type_id': type_id})
+        params = self._builder.build_main_payload()
         data, status_code = await self.__transport.send(
             method=HTTPMethod.GET,
-            endpoint=self.__base_url + endpoint,
-            params=params
-        )
+            endpoint=endpoint,
+            params=params)
         return data, status_code
 
