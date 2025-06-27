@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import AsyncMock, patch
 from http import HTTPStatus
 from ds_crm_sdk.clients.http.async_crm_client import AsyncCRMClient
-from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.transports.http import DSAsyncHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin, SortOrder
 from tests.fixtures import DummyAccountFactory
@@ -11,16 +10,13 @@ from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
 
 class TestAsyncHTTPCRMClient(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
-        self.builder = MainPayloadBuilder()
         self.request_token = 'Dummy Token'
         self.transport = DSAsyncHTTPTransport(token_provider=lambda: self.request_token)
         self.base_url = 'https://ds-mock-crm-service.com'
         self.client = AsyncCRMClient(
             base_url=self.base_url,
-            client_type=ClientOrigin.EWAP,
-            transport=self.transport,
-            builder=self.builder
-        )
+            client_origin=ClientOrigin.EWAP,
+            transport=self.transport)
         self.patcher = patch('httpx.AsyncClient.request')
         self.mock_request = self.patcher.start()
         self.addCleanup(self.patcher.stop)

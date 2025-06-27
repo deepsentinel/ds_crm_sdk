@@ -33,7 +33,7 @@ class MainPayloadBuilder(PayloadBuilder):
                     continue
 
                 setattr(payload_container, key, value)
-        payload = payload_container.model_dump(exclude_none=True)  # Exclude None values from the payload
+        payload = payload_container.model_dump(exclude_none=True, mode='json')  # Exclude None values from the payload
         if 'filters' in payload and isinstance(payload['filters'], dict):
             payload.update({**payload.pop('filters')})
         return payload

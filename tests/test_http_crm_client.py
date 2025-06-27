@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import patch
 from http import HTTPStatus
 from ds_crm_sdk.clients.http.crm_client import CRMClient
-from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.transports.http import DSHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin
 from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
@@ -69,6 +68,7 @@ class TestHTTPCRMClient(unittest.TestCase):
         args, kwargs = self.mock_request.call_args
         headers = kwargs.get('headers', {})
         params = kwargs.get('params', {})
+        print(params)
         complete_url = f"{self.base_url}{AccountEndpoint.BASE}"
 
         # Assertions

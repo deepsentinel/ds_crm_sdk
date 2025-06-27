@@ -2,6 +2,7 @@
 DS CRM SDK Request Payloads
 """
 from pydantic import BaseModel
+from ds_crm_sdk.constants import SortOrder
 
 
 class RequestPayloadBase(BaseModel):
@@ -10,7 +11,7 @@ class RequestPayloadBase(BaseModel):
     """
     filters: dict = {}
     sort_by: str = None
-    sort_order: str = None
+    sort_order: SortOrder = None
     offset: int = None
     limit: int = None
 
