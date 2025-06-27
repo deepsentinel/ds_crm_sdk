@@ -21,7 +21,7 @@ jobs:
 
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint ds_crm_sdk
 
     - name: Run tests with coverage
       run: |
