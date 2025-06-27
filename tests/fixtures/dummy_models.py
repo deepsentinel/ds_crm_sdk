@@ -34,3 +34,20 @@ class DummyAccount:
         """
         return asdict(self)
 
+
+@dataclass
+class DummyAccountType:
+    commission_rate: int = 0
+    created: str = "Thu, 19 Jun 2025 07:53:07 GMT"
+    description: str = "Internal Deep Sentinel account"
+    id: int = 1
+    is_partner: bool = False
+    modified: str = "Thu, 19 Jun 2025 07:53:07 GMT"
+    name: str = "Deep Sentinel"
+
+    def to_dict(self):
+        """
+        Convert the AccountType instance to a dictionary representation.
+        :return:
+        """
+        return asdict(self)

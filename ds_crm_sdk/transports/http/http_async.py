@@ -34,7 +34,7 @@ class DSAsyncHTTPTransport(HTTPHeaderTokenProvider, AsyncHTTPTransport):
                     url=endpoint,
                     json=payload.dict() if payload else None,
                     params=params,
-                    headers=self._headers(headers)
+                    headers=self.set_headers(headers)
                 )
                 return await response.json(), response.status_code
             except httpx.HTTPStatusError as e:

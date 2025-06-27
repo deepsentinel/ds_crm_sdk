@@ -69,7 +69,7 @@ class HTTPHeaderTokenProvider:
         """
         self.token_provider = token_provider
 
-    def _headers(self, extra: dict = None) -> Dict[str, str]:
+    def set_headers(self, extra: dict = None) -> Dict[str, str]:
         """
         Method that sets the header with the given key, value pairs
         :param extra: Additional header fields, if needed

@@ -36,7 +36,7 @@ class DSHTTPTransport(HTTPHeaderTokenProvider, HTTPTransport):
                 url=endpoint,
                 json=payload.dict() if payload else None,
                 params=params,
-                headers=self._headers(headers),
+                headers=self.set_headers(headers),
                 timeout=timeout
             )
             return response.json(), response.status_code

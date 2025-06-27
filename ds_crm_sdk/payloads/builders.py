@@ -31,7 +31,6 @@ class MainPayloadBuilder(PayloadBuilder):
                     raise ValueError(f"Invalid key '{key}' for payload model {payload_container.__class__.__name__}")
                 if value is None:
                     continue
-
                 setattr(payload_container, key, value)
         payload = payload_container.model_dump(exclude_none=True, mode='json')  # Exclude None values from the payload
         if 'filters' in payload and isinstance(payload['filters'], dict):

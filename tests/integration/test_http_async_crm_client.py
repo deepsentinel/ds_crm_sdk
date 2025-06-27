@@ -4,8 +4,8 @@ from http import HTTPStatus
 from ds_crm_sdk.clients.http.async_crm_client import AsyncCRMClient
 from ds_crm_sdk.transports.http import DSAsyncHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin, SortOrder
-from tests.fixtures import DummyAccountFactory
-from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
+from tests.fixtures import DummyAccountFactory, DummyAccountTypeFactory
+from ds_crm_sdk.clients.http.endpoints import AccountEndpoint, AccountTypesEndpoint
 
 
 class TestAsyncHTTPCRMClient(unittest.IsolatedAsyncioTestCase):
@@ -82,5 +82,49 @@ class TestAsyncHTTPCRMClient(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(kwargs['url'], complete_url)
         self.assertEqual(status_code, HTTPStatus.OK)
         self.assertEqual(data['accounts'], expected_response['accounts'])
+
+    async def test_get_account_types(self):
+        # Mock the response with status and return data
+        self.mock_request.return_value.status_code = HTTPStatus.OK
+        # Generate a list of dummy account types using the factory
+        account_types = [DummyAccountFactory().to_dict() for _ in range(3)]
+        self.mock_request.return_value.json.return_value = {'account_types': account_types}
+
+        # Trigger the request
+        data, status_code = await self.client.get_account_types(limit=3, offset=0)
+        self.mock_request.assert_called_once()
+        args, kwargs = self.mock_request.call_args
+        headers = kwargs.get('headers', {})
+        params = kwargs.get('params', {})
+        complete_url = f"{self.base_url}{AccountTypesEndpoint.ACCOUNT_TYPES}"
+
+        # Assertions
+        self.assertEqual(kwargs['method'], 'GET')
+        self.assertEqual(headers['Authorization'], self.request_token)
+        self.assertEqual(params['client_origin'], ClientOrigin.EWAP)
+        self.assertEqual(kwargs['url'], complete_url)
+        self.assertEqual(status_code, HTTPStatus.OK)
+        self.assertEqual(data['account_types'], account_types)
+
+    async def test_get_account_type(self):
+        # Mock the response with status and return data
+        self.mock_request.return_value.status_code = HTTPStatus.OK
+        # Generate a dummy account type using the factory
+        account_type = DummyAccountTypeFactory()
+        self.mock_request.return_value.json.return_value = {'account_type': account_type.to_dict()}
+        # Trigger the request
+        data, status_code = await self.client.get_account_type(type_id=account_type.id)
+        self.mock_request.assert_called_once()
+        args, kwargs = self.mock_request.call_args
+        headers = kwargs.get('headers', {})
+        params = kwargs.get('params', {})
+        complete_url = f"{self.base_url}{AccountTypesEndpoint.ACCOUNT_TYPE.format(type_id=account_type.id)}"
+        # Assertions
+        self.assertEqual(kwargs['method'], 'GET')
+        self.assertEqual(headers['Authorization'], self.request_token)
+        self.assertEqual(params['client_origin'], ClientOrigin.EWAP)
+        self.assertEqual(kwargs['url'], complete_url)
+        self.assertEqual(status_code, HTTPStatus.OK)
+        self.assertEqual(data['account_type'], account_type.to_dict())
 
 # Note: Above 2 tests are sufficient to cover the basic functionality of the AsyncCRMClient.

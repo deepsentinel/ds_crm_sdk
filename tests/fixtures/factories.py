@@ -3,7 +3,7 @@ Factories for generating dummy data for testing purposes.
 """
 import factory
 from faker import Faker
-from .dummy_models import DummyAccount
+from .dummy_models import DummyAccount, DummyAccountType
 
 # Initialize Faker instance for generating random data
 fake = Faker()
@@ -34,3 +34,15 @@ class DummyAccountFactory(factory.Factory):
     modified_by = factory.Faker('user_name')
     last_billing_date = factory.LazyFunction(lambda: fake
                                              .date_time_this_decade(tzinfo=None).isoformat())
+
+
+class DummyAccountTypeFactory(factory.Factory):
+    class Meta:
+        model = DummyAccountType
+    id = factory.Sequence(lambda n: n + 1)
+    name = factory.Faker('word')
+    description = factory.Faker('text', max_nb_chars=100)
+    commission_rate = factory.Faker('random_int', min=0, max=50)
+    is_partner = factory.Faker('boolean')
+    created = factory.LazyFunction(lambda: fake.date_time_this_decade(tzinfo=None).isoformat())
+    modified = factory.LazyFunction(lambda: fake.date_time_this_decade(tzinfo=None).isoformat())

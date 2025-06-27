@@ -4,9 +4,9 @@ from http import HTTPStatus
 from ds_crm_sdk.clients.http.crm_client import CRMClient
 from ds_crm_sdk.transports.http import DSHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin
-from ds_crm_sdk.clients.http.endpoints import AccountEndpoint
+from ds_crm_sdk.clients.http.endpoints import AccountEndpoint, AccountTypesEndpoint
 from ds_crm_sdk.constants import SortOrder
-from tests.fixtures import DummyAccountFactory
+from tests.fixtures import DummyAccountFactory, DummyAccountTypeFactory
 
 
 class TestHTTPCRMClient(unittest.TestCase):
@@ -87,4 +87,48 @@ class TestHTTPCRMClient(unittest.TestCase):
         self.assertEqual(status_code, HTTPStatus.OK)
         self.assertEqual(data['accounts'], expected_response['accounts'])
 
-# Note: Above 2 tests are sufficient to cover the basic functionality of the CRMClient.
+    def test_get_account_types(self):
+        # Mock the response with status and return data
+        self.mock_request.return_value.status_code = HTTPStatus.OK
+        # Generate a list of dummy account types using the factory
+        account_types = [DummyAccountTypeFactory().to_dict() for _ in range(3)]
+        self.mock_request.return_value.json.return_value = {'account_types': account_types}
+
+        # Trigger the request
+        data, status_code = self.client.get_account_types(limit=3, offset=0)
+        self.mock_request.assert_called_once()
+        args, kwargs = self.mock_request.call_args
+        headers = kwargs.get('headers', {})
+        params = kwargs.get('params', {})
+        complete_url = f"{self.base_url}{AccountTypesEndpoint.ACCOUNT_TYPES}"
+
+        # Assertions
+        self.assertEqual(kwargs['method'], 'GET')
+        self.assertEqual(headers['Authorization'], self.request_token)
+        self.assertEqual(params['client_origin'], ClientOrigin.EWAP)
+        self.assertEqual(kwargs['url'], complete_url)
+        self.assertEqual(status_code, HTTPStatus.OK)
+        self.assertEqual(data['account_types'], account_types)
+
+    def test_get_account_type(self):
+        # Mock the response with status and return data
+        self.mock_request.return_value.status_code = HTTPStatus.OK
+        # Generate a dummy account type using the factory
+        account_type = DummyAccountTypeFactory()
+        self.mock_request.return_value.json.return_value = {'account_type': account_type.to_dict()}
+        # Trigger the request
+        data, status_code = self.client.get_account_type(type_id=account_type.id)
+        self.mock_request.assert_called_once()
+        args, kwargs = self.mock_request.call_args
+        headers = kwargs.get('headers', {})
+        params = kwargs.get('params', {})
+        complete_url = f"{self.base_url}{AccountTypesEndpoint.ACCOUNT_TYPE.format(type_id=account_type.id)}"
+        # Assertions
+        self.assertEqual(kwargs['method'], 'GET')
+        self.assertEqual(headers['Authorization'], self.request_token)
+        self.assertEqual(params['client_origin'], ClientOrigin.EWAP)
+        self.assertEqual(kwargs['url'], complete_url)
+        self.assertEqual(status_code, HTTPStatus.OK)
+        self.assertEqual(data['account_type'], account_type.to_dict())
+
+# Note: Above 4 tests are sufficient to cover the basic functionality of the CRMClient.

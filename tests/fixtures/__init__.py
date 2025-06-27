@@ -1,4 +1,4 @@
-from .factories import DummyAccountFactory
+from .factories import DummyAccountFactory, DummyAccountTypeFactory
 
-__all__ = ['DummyAccountFactory']
+__all__ = ['DummyAccountFactory', 'DummyAccountTypeFactory']
 
