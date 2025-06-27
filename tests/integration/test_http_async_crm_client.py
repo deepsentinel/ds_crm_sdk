@@ -65,7 +65,7 @@ class TestAsyncHTTPCRMClient(unittest.IsolatedAsyncioTestCase):
         args, kwargs = self.mock_request.call_args
         headers = kwargs.get('headers', {})
         params = kwargs.get('params', {})
-        complete_url = f"{self.base_url}{AccountEndpoint.BASE}"
+        complete_url = f"{self.base_url}{AccountEndpoint.ACCOUNTS}"
 
         # Assertions
         self.assertEqual(len(data['accounts']), len(filtered_accounts))

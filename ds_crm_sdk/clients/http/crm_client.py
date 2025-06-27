@@ -45,7 +45,7 @@ class CRMClient(BaseCRMClient):
         :param sort_order: The order of sorting, default is descending (DESC).
         :return: A list of accounts matching the filters with http status code
         """
-        endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.BASE)
+        endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.ACCOUNTS)
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
