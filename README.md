@@ -25,16 +25,13 @@ pip install .
 * CRMClient Init
 
 ```python
-from ds_crm_sdk.http_clients.crm_client import CRMClient
+from ds_crm_sdk.clients.http.crm_client import CRMClient
 from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.transports import DSHTTPTransport
 from ds_crm_sdk.constants import ClientOrigin
-
-builder = MainPayloadBuilder()
 transport = DSHTTPTransport(token_provider=lambda: 'fake-token')
 base_url = '<<domain base url>>'
-client = CRMClient(client_origin=ClientOrigin.EWAP, builder=builder,
-                   base_url=base_url, transport=transport)
+client = CRMClient(client_origin=ClientOrigin.EWAP, base_url=base_url, transport=transport)
 ```
 
 #### 1. `get_account(account_id: str) -> tuple`
@@ -139,10 +136,10 @@ print(data, status_code)
 
 ```text
 crm_sdk/
-├── transports/          # Sync and async HTTP transport classes
-├── payloads/            # Client-specific payload builders
-├── http_clients/        # Asynchronous and synchronous client implementations, along with common client logic
-├── constants/           # Constants and enums used across the SDK
+├── transports/http         # Sync and async HTTP transport classes
+├── payloads/               # Client-specific payload builders, their factories, and models
+├── clients/http_clients/   # Asynchronous and synchronous client implementations, along with common client logic
+├── constants.py            # Constants and enums used across the SDK
 ```
 
 ---
