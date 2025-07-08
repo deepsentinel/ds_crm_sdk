@@ -7,9 +7,11 @@ from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.constants import ClientOrigin, SortOrder
 from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
 from .base import BaseCRMClient
+from ds_crm_sdk.sdk_contracts import CRMClientAPI
+from ...dtos import AccountRequestDTO
 
 
-class CRMClient(BaseCRMClient):
+class CRMClient(BaseCRMClient, CRMClientAPI):
     """
     Synchronous CRMClient for interacting with CRM API endpoints.
     """
@@ -35,7 +37,7 @@ class CRMClient(BaseCRMClient):
         return data, status_code
 
     def get_accounts(self, filters: dict = None, offset=0, limit=10,
-                     sort_by: str = 'created', sort_order: SortOrder = SortOrder.DESC) -> tuple:
+                     sort_by: str = 'name', sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get accounts with filters.
         :param filters: A dictionary containing the filters to apply (optional).
@@ -57,7 +59,7 @@ class CRMClient(BaseCRMClient):
         return data, status_code
 
     def get_account_addresses(self, account_id: str, filters: dict = None, offset=0, limit=10,
-                              sort_by: str = 'address.created',
+                              sort_by: str = 'created',
                               sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get addresses for a specific account.
@@ -135,6 +137,22 @@ class CRMClient(BaseCRMClient):
             method=HTTPMethod.GET,
             endpoint=endpoint,
             params=params
+        )
+        return data, status_code
+
+    def create_account(self, account_data: AccountRequestDTO) -> tuple:
+        """
+        Create a new account.
+        :param account_data: An instance of AccountRequestDTO containing the account details.
+        :return: The created account details with http status code.
+        """
+        endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
+        params = self._builder.build_main_payload()
+        complete_data = params.update({**account_data.model_dump(exclude_none=True)})
+        data, status_code = self.__transport.send(
+            method=HTTPMethod.POST,
+            endpoint=endpoint,
+            payload=complete_data
         )
         return data, status_code
 

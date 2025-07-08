@@ -7,9 +7,10 @@ from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.constants import SortOrder, ClientOrigin
 from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
 from .base import BaseCRMClient
+from ds_crm_sdk.sdk_contracts.asyncio import AsyncCRMClientAPI
 
 
-class AsyncCRMClient(BaseCRMClient):
+class AsyncCRMClient(BaseCRMClient, AsyncCRMClientAPI):
     """
     Async CRMClient for interacting with CRM API endpoints.
     """
@@ -35,7 +36,7 @@ class AsyncCRMClient(BaseCRMClient):
         return data, status_code
 
     async def get_accounts(self, filters: dict = None, offset=0, limit=10,
-                           sort_by: str = 'created',
+                           sort_by: str = 'name',
                            sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get accounts with filters.
@@ -58,7 +59,7 @@ class AsyncCRMClient(BaseCRMClient):
         return data, status_code
 
     async def get_account_addresses(self, account_id: str, filters: dict = None, offset=0, limit=10,
-                                    sort_by: str = 'address.created',
+                                    sort_by: str = 'created',
                                     sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get addresses for a specific account.
