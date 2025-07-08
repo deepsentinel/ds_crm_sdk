@@ -5,8 +5,8 @@ class AccountRequestDTO(BaseModel):
     """
     DTO for building account requests in the CRM system.
     """
-    account_type_id: int
-    parent_account_id: int
+    account_type_id: int = None
+    parent_account_id: int = None
     name: str = None
     phone_number: str = None
     email_address: str = None
