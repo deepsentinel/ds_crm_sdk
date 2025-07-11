@@ -148,7 +148,7 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         """
         endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
         payload = self._builder.build_main_payload()
-        payload.update({'account_data': {**account_data.model_dump(exclude_none=True)},
+        payload.update({'account_data': {**account_data.model_dump()},
                         'meta': payload})
         data, status_code = self.__transport.send(
             method=HTTPMethod.POST,
