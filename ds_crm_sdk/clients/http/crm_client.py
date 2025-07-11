@@ -9,6 +9,7 @@ from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndp
 from .base import BaseCRMClient
 from ds_crm_sdk.sdk_contracts import CRMClientAPI
 from ds_crm_sdk.dtos import AccountRequestDTO
+from ds_crm_sdk.logging import logger
 
 
 class CRMClient(BaseCRMClient, CRMClientAPI):
@@ -150,10 +151,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         payload = self._builder.build_main_payload()
         payload.update({'account_data': {**account_data.model_dump()},
                         'meta': payload})
+        logger.debug(f'[create_account] Sending request to create account with data: {payload}')
         data, status_code = self.__transport.send(
             method=HTTPMethod.POST,
             endpoint=endpoint,
             payload=payload
         )
+        logger.debug(f'[create_account] Received response: {data} with status code: {status_code}')
         return data, status_code
 
