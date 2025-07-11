@@ -16,7 +16,7 @@ class DSAsyncHTTPTransport(HTTPHeaderTokenProvider, AsyncHTTPTransport):
         super().__init__(token_provider)
 
     async def send(self, method: HTTPMethod, endpoint: str,
-                   payload: Optional[BaseModel] = None, params: dict = None,
+                   payload: dict = None, params: dict = None,
                    headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
         """
         Sends the http request based on the given arguments
@@ -32,7 +32,7 @@ class DSAsyncHTTPTransport(HTTPHeaderTokenProvider, AsyncHTTPTransport):
                 response = await client.request(
                     method=method,
                     url=endpoint,
-                    json=payload.dict() if payload else None,
+                    json=payload if payload else None,
                     params=params,
                     headers=self.set_headers(headers)
                 )

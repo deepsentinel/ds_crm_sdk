@@ -8,6 +8,7 @@ from ds_crm_sdk.constants import SortOrder, ClientOrigin
 from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
 from .base import BaseCRMClient
 from ds_crm_sdk.sdk_contracts.asyncio import AsyncCRMClientAPI
+from ds_crm_sdk.dtos import AccountRequestDTO
 
 
 class AsyncCRMClient(BaseCRMClient, AsyncCRMClientAPI):
@@ -138,5 +139,22 @@ class AsyncCRMClient(BaseCRMClient, AsyncCRMClientAPI):
             method=HTTPMethod.GET,
             endpoint=endpoint,
             params=params)
+        return data, status_code
+
+    async def create_account(self, account_data: AccountRequestDTO) -> tuple:
+        """
+        Create a new CRM account.
+        :param account_data: An instance of AccountRequestDTO containing the account data to create.
+        :return: A dictionary representing the created account data with http status code.
+        """
+        endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
+        payload = self._builder.build_main_payload()
+        payload.update({'account_data': {**account_data.model_dump(exclude_none=True)},
+                        'meta': payload})
+        data, status_code = await self.__transport.send(
+            method=HTTPMethod.POST,
+            endpoint=endpoint,
+            payload=payload
+        )
         return data, status_code
 

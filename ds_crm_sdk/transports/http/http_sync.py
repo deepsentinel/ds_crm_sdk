@@ -17,14 +17,14 @@ class DSHTTPTransport(HTTPHeaderTokenProvider, HTTPTransport):
         super().__init__(token_provider)
 
     def send(self, method: HTTPMethod, endpoint: str,
-             payload: Optional[BaseModel] = None, params: dict = None,
+             payload: dict = None, params: dict = None,
              headers: Optional[Dict[str, str]] = None,
              timeout: float = 30.0) -> Tuple[Optional[dict], int]:
         """
         Sends the http request based on the given arguments
         :param method: HTTPMethod Enum
         :param endpoint: CRM service endpoint
-        :param payload: payload of the request: Expects pydantic models
+        :param payload: payload of the request
         :param params: params, if the request needs params
         :param headers: headers used for the request
         :param timeout: Timeout for the request in seconds
@@ -34,7 +34,7 @@ class DSHTTPTransport(HTTPHeaderTokenProvider, HTTPTransport):
             response = requests.request(
                 method=method,
                 url=endpoint,
-                json=payload.dict() if payload else None,
+                json=payload if payload else None,
                 params=params,
                 headers=self.set_headers(headers),
                 timeout=timeout

@@ -1,8 +1,8 @@
 import unittest
 from ds_crm_sdk.payloads.factory import get_main_payload_builder
 from ds_crm_sdk.constants import ClientOrigin
-from ds_crm_sdk.payloads.request_models import (WebPayloadBase, EWAPPayloadBase,
-                                                MobileAPIPayloadBase, AdminDashboardPayloadBase)
+from ds_crm_sdk.payloads.base_request_models import (WebPayloadBase, EWAPPayloadBase,
+                                                     MobileAPIPayloadBase, AdminDashboardPayloadBase)
 
 
 class TestBuilder(unittest.TestCase):

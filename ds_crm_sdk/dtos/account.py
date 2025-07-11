@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 
+
 class AccountRequestDTO(BaseModel):
     """
     DTO for building account requests in the CRM system.
@@ -16,3 +17,4 @@ class AccountRequestDTO(BaseModel):
     # This field is used to check if the account already exists, if it does, then this is just an association request,
     # no new account will be created.
     existing_account_email: str = None
+

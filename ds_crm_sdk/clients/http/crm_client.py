@@ -8,7 +8,7 @@ from ds_crm_sdk.constants import ClientOrigin, SortOrder
 from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
 from .base import BaseCRMClient
 from ds_crm_sdk.sdk_contracts import CRMClientAPI
-from ...dtos import AccountRequestDTO
+from ds_crm_sdk.dtos import AccountRequestDTO
 
 
 class CRMClient(BaseCRMClient, CRMClientAPI):
@@ -147,12 +147,13 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         :return: The created account details with http status code.
         """
         endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
-        params = self._builder.build_main_payload()
-        complete_data = params.update({**account_data.model_dump(exclude_none=True)})
+        payload = self._builder.build_main_payload()
+        payload.update({'account_data': {**account_data.model_dump(exclude_none=True)},
+                        'meta': payload})
         data, status_code = self.__transport.send(
             method=HTTPMethod.POST,
             endpoint=endpoint,
-            payload=complete_data
+            payload=payload
         )
         return data, status_code
 
