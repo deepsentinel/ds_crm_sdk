@@ -9,6 +9,7 @@ from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndp
 from .base import BaseCRMClient
 from ds_crm_sdk.sdk_contracts.asyncio import AsyncCRMClientAPI
 from ds_crm_sdk.dtos import AccountRequestDTO
+from ds_crm_sdk.logging import logger
 
 
 class AsyncCRMClient(BaseCRMClient, AsyncCRMClientAPI):
@@ -148,13 +149,14 @@ class AsyncCRMClient(BaseCRMClient, AsyncCRMClientAPI):
         :return: A dictionary representing the created account data with http status code.
         """
         endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
-        payload = self._builder.build_main_payload()
-        payload.update({'account_data': {**account_data.model_dump(exclude_none=True)},
-                        'meta': payload})
-        data, status_code = await self.__transport.send(
+        meta = self._builder.build_main_payload()
+        payload = {'account_data': {**account_data.model_dump()}, 'meta': meta}
+        logger.debug(f'[create_account] Sending request to create account with data: {payload}')
+        data, status_code = self.__transport.send(
             method=HTTPMethod.POST,
             endpoint=endpoint,
             payload=payload
         )
+        logger.debug(f'[create_account] Received response: {data} with status code: {status_code}')
         return data, status_code
 

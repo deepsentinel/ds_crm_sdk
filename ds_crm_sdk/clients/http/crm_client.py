@@ -148,9 +148,8 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         :return: The created account details with http status code.
         """
         endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
-        payload = self._builder.build_main_payload()
-        payload.update({'account_data': {**account_data.model_dump()},
-                        'meta': payload})
+        meta = self._builder.build_main_payload()
+        payload = {'account_data': {**account_data.model_dump()}, 'meta': meta}
         logger.debug(f'[create_account] Sending request to create account with data: {payload}')
         data, status_code = self.__transport.send(
             method=HTTPMethod.POST,
