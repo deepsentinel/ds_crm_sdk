@@ -4,7 +4,6 @@ Async HTTP Transport for DS CRM SDK
 from http import HTTPStatus
 from typing import Optional, Callable, Dict, Tuple
 import httpx
-from pydantic import BaseModel
 from .base import HTTPMethod, AsyncHTTPTransport, HTTPHeaderTokenProvider
 
 

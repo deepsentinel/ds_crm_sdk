@@ -20,6 +20,7 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
                  transport: HTTPTransport):
         super().__init__(base_url=base_url, builder=MainPayloadBuilder(client_origin=client_origin))
         self.__transport = transport
+        self.__client_origin = client_origin
 
     def get_account(self, account_id: str) -> tuple:
         """
@@ -30,10 +31,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.SPECIFIC_ACCOUNT,
                                             values_to_inject={'account_id': account_id})
         params = self._builder.build_main_payload()
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -52,10 +55,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -77,10 +82,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -95,10 +102,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
                                             values_to_inject={'account_id': account_id,
                                                               'address_id': address_id})
         params = self._builder.build_main_payload()
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -118,10 +127,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -134,10 +145,12 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         endpoint = self._build_endpoint_url(endpoint_template=AccountTypesEndpoint.ACCOUNT_TYPE,
                                             values_to_inject={'type_id': type_id})
         params = self._builder.build_main_payload()
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -150,11 +163,13 @@ class CRMClient(BaseCRMClient, CRMClientAPI):
         endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
         meta = self._builder.build_main_payload()
         payload = {'account_data': {**account_data.model_dump()}, 'meta': meta}
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         logger.debug(f'[create_account] Sending request to create account with data: {payload}')
         data, status_code = self.__transport.send(
             method=HTTPMethod.POST,
             endpoint=endpoint,
-            payload=payload
+            payload=payload,
+            headers=headers
         )
         logger.debug(f'[create_account] Received response: {data} with status code: {status_code}')
         return data, status_code
