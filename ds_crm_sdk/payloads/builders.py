@@ -2,7 +2,7 @@
 MainPayloadBuilder is responsible for constructing the main payload
 """
 from ds_crm_sdk.constants import ClientOrigin
-from .base import PayloadBuilder
+from .base_builder import PayloadBuilder
 from .factory import get_main_payload_builder
 
 

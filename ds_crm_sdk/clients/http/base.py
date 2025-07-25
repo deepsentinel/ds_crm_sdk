@@ -2,6 +2,7 @@
 Base class for CRM HTTP clients.
 """
 from ds_crm_sdk.payloads import PayloadBuilder
+from ds_crm_sdk.constants import ClientOrigin
 
 
 class BaseCRMClient:
@@ -32,3 +33,12 @@ class BaseCRMClient:
         :return: A dictionary containing the main payload parameters.
         """
         return self._builder.build_main_payload(**extra)
+
+    @staticmethod
+    def _build_custom_client_origin(client_origin: ClientOrigin) -> dict:
+        """
+        Build the custom client origin for the request payload.
+        :param client_origin: The origin of the client making the request.
+        :return: A dictionary containing the client origin.
+        """
+        return {'X-Client-Origin': client_origin} if client_origin else {}

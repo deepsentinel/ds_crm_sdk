@@ -26,13 +26,13 @@ class HTTPTransport(ABC):
     """
     @abstractmethod
     def send(self, method: HTTPMethod, endpoint: str,
-             payload: Optional[BaseModel] = None, params: dict = None,
+             payload: dict = None, params: dict = None,
              headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
         """
         Abstract method that can be used by sync http concreate classes to send requests
         :param method: HTTPMethod Enum
         :param endpoint: CRM service endpoint
-        :param payload: payload of the request: Expects pydantic models
+        :param payload: payload of the request
         :param params: params, if the request needs params
         :param headers: headers used for the request
         :return: Tuple with data and status code
@@ -45,13 +45,13 @@ class AsyncHTTPTransport(ABC):
     """
     @abstractmethod
     async def send(self, method: HTTPMethod, endpoint: str,
-                   payload: Optional[BaseModel] = None, params: dict = None,
+                   payload: dict = None, params: dict = None,
                    headers: Optional[Dict[str, str]] = None) -> Tuple[Optional[dict], int]:
         """
         Abstract method that can be used by async http concreate classes to send requests
         :param method: HTTPMethod Enum
         :param endpoint: CRM service endpoint
-        :param payload: payload of the request: Expects pydantic models
+        :param payload: payload of the request
         :param params: params, if the request needs params
         :param headers: headers used for the request
         :return: Tuple with data and status code

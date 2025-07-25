@@ -1,5 +1,5 @@
 from .builders import MainPayloadBuilder
-from .base import PayloadBuilder
+from .base_builder import PayloadBuilder
 
 __all__ = ['PayloadBuilder']
 

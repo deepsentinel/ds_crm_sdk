@@ -7,9 +7,12 @@ from ds_crm_sdk.payloads import MainPayloadBuilder
 from ds_crm_sdk.constants import ClientOrigin, SortOrder
 from .endpoints import AccountEndpoint, AccountAddressEndpoint, AccountTypesEndpoint
 from .base import BaseCRMClient
+from ds_crm_sdk.sdk_contracts import CRMClientAPI
+from ds_crm_sdk.dtos import AccountRequestDTO
+from ds_crm_sdk.logging import logger
 
 
-class CRMClient(BaseCRMClient):
+class CRMClient(BaseCRMClient, CRMClientAPI):
     """
     Synchronous CRMClient for interacting with CRM API endpoints.
     """
@@ -17,6 +20,7 @@ class CRMClient(BaseCRMClient):
                  transport: HTTPTransport):
         super().__init__(base_url=base_url, builder=MainPayloadBuilder(client_origin=client_origin))
         self.__transport = transport
+        self.__client_origin = client_origin
 
     def get_account(self, account_id: str) -> tuple:
         """
@@ -27,15 +31,17 @@ class CRMClient(BaseCRMClient):
         endpoint = self._build_endpoint_url(endpoint_template=AccountEndpoint.SPECIFIC_ACCOUNT,
                                             values_to_inject={'account_id': account_id})
         params = self._builder.build_main_payload()
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
     def get_accounts(self, filters: dict = None, offset=0, limit=10,
-                     sort_by: str = 'created', sort_order: SortOrder = SortOrder.DESC) -> tuple:
+                     sort_by: str = 'name', sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get accounts with filters.
         :param filters: A dictionary containing the filters to apply (optional).
@@ -49,15 +55,17 @@ class CRMClient(BaseCRMClient):
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
     def get_account_addresses(self, account_id: str, filters: dict = None, offset=0, limit=10,
-                              sort_by: str = 'address.created',
+                              sort_by: str = 'created',
                               sort_order: SortOrder = SortOrder.DESC) -> tuple:
         """
         Get addresses for a specific account.
@@ -74,10 +82,12 @@ class CRMClient(BaseCRMClient):
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -92,10 +102,12 @@ class CRMClient(BaseCRMClient):
                                             values_to_inject={'account_id': account_id,
                                                               'address_id': address_id})
         params = self._builder.build_main_payload()
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -115,10 +127,12 @@ class CRMClient(BaseCRMClient):
         params = self._builder.build_main_payload(**{'offset': offset, 'limit': limit,
                                                      'sort_by': sort_by, 'sort_order': sort_order,
                                                      'filters': filters})
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
         return data, status_code
 
@@ -131,10 +145,32 @@ class CRMClient(BaseCRMClient):
         endpoint = self._build_endpoint_url(endpoint_template=AccountTypesEndpoint.ACCOUNT_TYPE,
                                             values_to_inject={'type_id': type_id})
         params = self._builder.build_main_payload()
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
         data, status_code = self.__transport.send(
             method=HTTPMethod.GET,
             endpoint=endpoint,
-            params=params
+            params=params,
+            headers=headers
         )
+        return data, status_code
+
+    def create_account(self, account_data: AccountRequestDTO) -> tuple:
+        """
+        Create a new account.
+        :param account_data: An instance of AccountRequestDTO containing the account details.
+        :return: The created account details with http status code.
+        """
+        endpoint = self._build_endpoint_url(AccountEndpoint.ACCOUNTS)
+        meta = self._builder.build_main_payload()
+        payload = {'account_data': {**account_data.model_dump()}, 'meta': meta}
+        headers = self._build_custom_client_origin(client_origin=self.__client_origin)
+        logger.debug(f'[create_account] Sending request to create account with data: {payload}')
+        data, status_code = self.__transport.send(
+            method=HTTPMethod.POST,
+            endpoint=endpoint,
+            payload=payload,
+            headers=headers
+        )
+        logger.debug(f'[create_account] Received response: {data} with status code: {status_code}')
         return data, status_code
 

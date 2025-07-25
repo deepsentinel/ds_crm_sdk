@@ -2,7 +2,7 @@
 Factory module for creating payload builders based on client type.
 """
 from ds_crm_sdk.constants import ClientOrigin
-from .request_models import WebPayloadBase, EWAPPayloadBase, MobileAPIPayloadBase, AdminDashboardPayloadBase
+from .base_request_models import WebPayloadBase, EWAPPayloadBase, MobileAPIPayloadBase, AdminDashboardPayloadBase
 
 
 def get_main_payload_builder(client_origin: str):
